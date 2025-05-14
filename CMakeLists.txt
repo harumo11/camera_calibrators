@@ -1,0 +1,35 @@
+cmake_minimum_required(VERSION 3.12)
+project(opencv_charuco)
+
+set(CMAKE_COMPILE_OPTIONS "-std=c++20")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+find_package(OpenCV REQUIRED)
+
+add_executable(create_charuco_board create_charuco_board.cpp)
+add_executable(estimate_aruco_marker estimate_aruco_maker.cpp)
+add_executable(create_charuco_diamond create_charuco_diamond.cpp)
+add_executable(create_aruco_marker create_aruco_marker.cpp)
+add_executable(detect_charuco_diamond detect_charcuco_diamond.cpp)
+add_executable(detect_aruco_marker detect_aruco_marker.cpp)
+add_executable(estimate_charuco_board estimate_charuco_board.cpp)
+add_executable(calibrate_with_chess calibrate_with_chess.cpp)
+add_executable(calibrate_with_charuco calibrate_with_charuco.cpp)
+add_executable(calibrate_with_assymetric_circle calibrate_with_assymetric_circle.cpp)
+add_executable(test_camera_calibrators test_camera_calibrators.cpp camera_calibrators.cpp)
+
+add_library(camera_calibrators camera_calibrators.cpp)
+
+target_link_libraries(create_charuco_board ${OpenCV_LIBS})
+target_link_libraries(create_aruco_marker ${OpenCV_LIBS})
+target_link_libraries(estimate_aruco_marker ${OpenCV_LIBS})
+target_link_libraries(create_charuco_diamond ${OpenCV_LIBS})
+target_link_libraries(detect_charuco_diamond ${OpenCV_LIBS})
+target_link_libraries(detect_aruco_marker ${OpenCV_LIBS})
+target_link_libraries(estimate_charuco_board ${OpenCV_LIBS})
+target_link_libraries(calibrate_with_chess ${OpenCV_LIBS})
+target_link_libraries(calibrate_with_charuco ${OpenCV_LIBS})
+target_link_libraries(calibrate_with_assymetric_circle ${OpenCV_LIBS})
+target_link_libraries(test_camera_calibrators ${OpenCV_LIBS})
+
+target_link_libraries(camera_calibrators ${OpenCV_LIBS})
