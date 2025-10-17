@@ -16,8 +16,7 @@
 void log(std::string message) {
     auto now = std::chrono::system_clock::now();
     auto now_c = std::chrono::system_clock::to_time_t(now);
-    std::cout << std::put_time(std::localtime(&now_c), "%F %T") << " "
-              << message << std::endl;
+    std::cout << std::put_time(std::localtime(&now_c), "%F %T") << " " << message << std::endl;
 }
 
 int main(void) {
@@ -34,19 +33,17 @@ int main(void) {
     std::vector<std::vector<cv::Point3f>> all_object_points;
 
     // aruco dictionary
-    cv::aruco::Dictionary dictionary =
-        cv::aruco::getPredefinedDictionary(cv::aruco::DICT_4X4_50);
+    cv::aruco::Dictionary dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_4X4_50);
     // charuco board
-    cv::aruco::CharucoBoard board(cv::Size(4, 5), square_length, marker_length,
-                                  dictionary);
+    cv::aruco::CharucoBoard board(cv::Size(4, 5), square_length, marker_length, dictionary);
     // charuco board detector
     charuco_parameters.tryRefineMarkers = true;
     detect_parameters.cornerRefinementMethod = cv::aruco::CORNER_REFINE_SUBPIX;
-    cv::aruco::CharucoDetector detector(board, charuco_parameters,
-                                        detect_parameters);
+    cv::aruco::CharucoDetector detector(board, charuco_parameters, detect_parameters);
 
     // Open camera
-    cv::VideoCapture cap(0);
+    // cv::VideoCapture cap(0);
+    cv::VideoCapture cap(6);
     if (!cap.isOpened()) {
         std::cout << "No camera is opened" << std::endl;
         return -1;
@@ -67,22 +64,18 @@ int main(void) {
         std::vector<std::vector<cv::Point2f>> marker_corners;
 
         // Detect charuco corners
-        detector.detectBoard(frame_src, current_charuco_corners,
-                             current_charuco_ids, marker_corners, marker_ids);
+        detector.detectBoard(frame_src, current_charuco_corners, current_charuco_ids, marker_corners, marker_ids);
 
         frame_src.copyTo(frame_output);
         if (!current_charuco_ids.empty()) {
-            cv::aruco::drawDetectedMarkers(frame_output, marker_corners,
-                                           marker_ids);
+            cv::aruco::drawDetectedMarkers(frame_output, marker_corners, marker_ids);
         }
         if (current_charuco_corners.total() > 3) {
-            cv::aruco::drawDetectedCornersCharuco(
-                frame_output, current_charuco_corners, current_charuco_ids);
+            cv::aruco::drawDetectedCornersCharuco(frame_output, current_charuco_corners, current_charuco_ids);
         }
 
-        cv::putText(frame_output, "Press 'c' to capture or ESC to finish",
-                    cv::Point(10, 30), cv::FONT_HERSHEY_SIMPLEX, 0.5,
-                    cv::Scalar(0, 255, 0), 1);
+        cv::putText(frame_output, "Press 'c' to capture or ESC to finish", cv::Point(10, 30), cv::FONT_HERSHEY_SIMPLEX,
+                    0.5, cv::Scalar(0, 255, 0), 1);
 
         cv::imshow("Charuco corners", frame_output);
         char key = (char)cv::waitKey(1);
@@ -92,8 +85,8 @@ int main(void) {
         }
 
         if (key == 'c' && current_charuco_corners.total() > 3) {
-            board.matchImagePoints(current_charuco_corners, current_charuco_ids,
-                                   current_object_points, current_image_points);
+            board.matchImagePoints(current_charuco_corners, current_charuco_ids, current_object_points,
+                                   current_image_points);
             if (current_image_points.empty() || current_object_points.empty()) {
                 log("Points matching failed, try again");
                 continue;
@@ -108,8 +101,7 @@ int main(void) {
 
             image_size = frame_src.size();
         } else {
-            log("current charuco corners: " +
-                std::to_string(current_charuco_corners.total()));
+            log("current charuco corners: " + std::to_string(current_charuco_corners.total()));
         }
     }
 
@@ -122,16 +114,14 @@ int main(void) {
     cv::Mat camera_matrix, dist_coeffs;
     cv::Mat rvecs, tvecs;
     double reprojection_errror =
-        cv::calibrateCamera(all_object_points, all_image_points, image_size,
-                            camera_matrix, dist_coeffs, rvecs, tvecs);
+        cv::calibrateCamera(all_object_points, all_image_points, image_size, camera_matrix, dist_coeffs, rvecs, tvecs);
     log("Calibration done");
     std::cout << "Reprojection error: " << reprojection_errror << std::endl;
     std::cout << "Camera matrix: " << camera_matrix << std::endl;
     std::cout << "Distortion coefficients: " << dist_coeffs << std::endl;
 
     // Save calibration results
-    cv::FileStorage fs("charuco_camera_calibration.yml",
-                       cv::FileStorage::WRITE);
+    cv::FileStorage fs("charuco_camera_calibration.yml", cv::FileStorage::WRITE);
     fs << "camera_matrix" << camera_matrix;
     fs << "dist_coeffs" << dist_coeffs;
     fs << "image_size" << image_size;

@@ -28,7 +28,8 @@ int main() {
     int square_size = 42; // mm
 
     // open camera
-    cv::VideoCapture cap(0);
+    // cv::VideoCapture cap(0);
+    cv::VideoCapture cap(6);
 
     if (!cap.isOpened()) {
         std::cout << "No camera is opened" << std::endl;
@@ -85,7 +86,7 @@ int main() {
     std::cout << "error : " << rms << std::endl;
 
     // save the camera matrix
-    cv::FileStorage fs("chess_camera_calibration.yml", cv::FileStorage::WRITE);
+    cv::FileStorage fs("chess_camera_calibration_realsense.yml", cv::FileStorage::WRITE);
     if (fs.isOpened()) {
         cv::write(fs, "camera_matrix", camera_matrix);
         cv::write(fs, "dist_coeffs", dist_coeff);
