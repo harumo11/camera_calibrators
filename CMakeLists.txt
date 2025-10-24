@@ -25,6 +25,7 @@ add_executable(test_camera_calibrators test_camera_calibrators.cpp camera_calibr
 add_executable(list_up_cam_id list_up_cam_id.cpp)
 add_executable(create_chess_board create_chess_board.cpp)
 add_executable(test_hist test_hist.cpp)
+add_executable(create_asymetry_rect_chess_board create_asynmetry_rect_chess_board.cpp)
 
 add_library(camera_calibrators camera_calibrators.cpp)
 
@@ -42,6 +43,7 @@ target_link_libraries(calibrate_with_assymetric_circle ${OpenCV_LIBS})
 target_link_libraries(test_camera_calibrators ${OpenCV_LIBS})
 target_link_libraries(list_up_cam_id ${OpenCV_LIBS})
 target_link_libraries(create_chess_board ${OpenCV_LIBS})
+target_link_libraries(create_asymetry_rect_chess_board ${OpenCV_LIBS})
 target_link_libraries(test_hist PRIVATE Matplot++::cimg  Matplot++::matplot)
 
 target_link_libraries(camera_calibrators ${OpenCV_LIBS})
